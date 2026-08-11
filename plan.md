@@ -109,7 +109,7 @@ RLS: `SELECT` only by the row owner. No public read.
 | `id` | `uuid` PK | |
 | `person_name` | `text` NOT NULL | |
 | `person_age` | `int` | Optional |
-| `person_photo_url` | `text` NOT NULL | Path in `report-photos` storage bucket |
+| `person_photo_url` | `text` | Path in `report-photos` storage bucket. Nullable: anonymous reports publish without a photo (storage rejects anon uploads). |
 | `last_known_lat` | `double precision` NOT NULL | |
 | `last_known_lng` | `double precision` NOT NULL | |
 | `last_known_address` | `text` | Free-text description (e.g. "Barrio San Antonio, Pereira") |
