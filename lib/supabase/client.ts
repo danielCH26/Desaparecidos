@@ -1,20 +1,25 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+'use client';
+
+import { createBrowserClient } from '@supabase/ssr';
 import { supabaseUrl, supabaseAnonKey } from '../env';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+let browserClient: SupabaseClient | null = null;
 
 /**
- * Browser/client-side Supabase client.
- * Uses the anonymous key - safe for public exposure.
+ * Browser-side Supabase client.
+ * Uses the anon key — safe for client-side use under RLS.
  */
-export function createSupabaseClient(): SupabaseClient {
-  return createClient(supabaseUrl, supabaseAnonKey);
+export function createSupabaseBrowserClient(): SupabaseClient {
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }
 
-// Singleton instance for client-side usage
-let supabaseInstance: SupabaseClient | null = null;
-
-export function getSupabaseClient(): SupabaseClient {
-  if (!supabaseInstance) {
-    supabaseInstance = createSupabaseClient();
+/**
+ * Singleton instance for client-side usage.
+ */
+export function getSupabaseBrowserClient(): SupabaseClient {
+  if (!browserClient) {
+    browserClient = createSupabaseBrowserClient();
   }
-  return supabaseInstance;
+  return browserClient;
 }

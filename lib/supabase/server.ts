@@ -1,27 +1,35 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { supabaseUrl, supabaseServiceRoleKey } from '../env';
+import 'server-only';
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { supabaseUrl, supabaseAnonKey } from '../env';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
- * Server-side Supabase client.
- * Uses the service role key - has full database access.
- * MUST NOT be exposed to the client.
+ * Server-side Supabase client (RSC, Server Actions, Route Handlers).
+ * Uses ANON key + cookies — NOT service_role. Service role bypasses RLS
+ * and would silently break owner-only reads (auth.uid() would be NULL).
+ *
+ * In Next.js 15, `cookies()` returns a Promise; await it.
  */
-export function createServerClient(): SupabaseClient {
-  return createClient(supabaseUrl, supabaseServiceRoleKey, {
-    auth: {
-      // Server-side auth is not needed for service role operations
-      persistSession: false,
-      autoRefreshToken: false,
+export async function createSupabaseServerClient(): Promise<SupabaseClient> {
+  const cookieStore = await cookies();
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          );
+        } catch {
+          // Called from a Server Component — can't write cookies.
+          // Safe to ignore; middleware will refresh the session.
+        }
+      },
     },
   });
-}
-
-// Singleton instance for server-side usage
-let supabaseServerInstance: SupabaseClient | null = null;
-
-export function getSupabaseServerClient(): SupabaseClient {
-  if (!supabaseServerInstance) {
-    supabaseServerInstance = createServerClient();
-  }
-  return supabaseServerInstance;
 }
