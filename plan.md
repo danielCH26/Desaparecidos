@@ -35,7 +35,7 @@ The MVP ships within hours, not weeks. Everything is built on free tiers so the 
 | Styling | Tailwind CSS | Fast utility-first styling, no design tokens debate, plays well with mobile-first |
 | Hosting | Vercel (Hobby) | Free tier, zero-config Next.js deploy, automatic preview URLs, edge cache |
 | Database | Supabase Postgres (free tier) | Managed Postgres with Row Level Security, 500 MB free — enough for MVP |
-| Auth | Supabase Auth | Email+password provider, RLS-aware, free tier; we use a synthetic `{cedula}@desaparecidos.local` email internally |
+| Auth | Supabase Auth | Email+password provider, RLS-aware, free tier; we use a synthetic `{cedula}@example.net` email internally |
 | File storage | Supabase Storage | 1 GB free, integrated RLS, public bucket for report photos |
 | Maps | Leaflet + OpenStreetMap tiles | No API key, no quota, works offline-friendly, mobile-tested |
 | Photo upload | Direct browser-to-Supabase upload | Serverless-friendly, no Next.js API route cost |
@@ -150,14 +150,14 @@ RLS: `SELECT`, `INSERT`, `DELETE` only by the row owner (`profile_id = auth.uid(
 
 ### Auth trick: cédula as login
 
-Supabase Auth requires an email-shaped identifier. We use a synthetic internal email of the form `{cedula}@desaparecidos.local`. The real user email is stored separately on `profiles.real_email` and never sent through Supabase's email pipeline (which is disabled in this project). Sign-up triggers a Postgres function that creates the matching `profiles` row.
+Supabase Auth requires an email-shaped identifier. We use a synthetic internal email of the form `{cedula}@example.net`. The real user email is stored separately on `profiles.real_email` and never sent through Supabase's email pipeline (which is disabled in this project). Sign-up triggers a Postgres function that creates the matching `profiles` row.
 
 ## Constraints
 
 - **Free tier only.** $0/month. No paid services, no API keys that require billing.
 - **MVP scope.** No over-engineering. Every feature must serve an active missing-persons case.
 - **Time pressure.** Ship within hours of starting implementation. Reusable patterns over clever abstractions.
-- **No email.** Outgoing email is not configured. Supabase Auth email confirmation is disabled. The synthetic `@desaparecidos.local` email is never delivered.
+- **No email.** Outgoing email is not configured. Supabase Auth email confirmation is disabled. The synthetic `@example.net` email is never delivered.
 - **No SMS.** Phone numbers are stored as plain text; no outbound SMS.
 - **Web only.** No native mobile app in MVP. Mobile web is the target.
 - **Spanish UI.** All user-facing copy is Spanish. Code, comments, and docs are English.

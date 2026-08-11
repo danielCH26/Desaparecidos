@@ -26,7 +26,7 @@ None. Server-client swap is wiring, not a spec-level change.
 ## Approach
 
 1. **Server client** — `createServerClient(url, anon, { cookies: { getAll, setAll } })` from `@supabase/ssr`. Keep service-role path available. Add `@supabase/ssr` to `package.json`.
-2. **Synthetic email helper** — `lib/supabase/syntheticEmail.ts`: `(cedula) => \`${cedula}@desaparecidos.local\``. Used only by register/login; never in DB queries.
+2. **Synthetic email helper** — `lib/supabase/syntheticEmail.ts`: `(cedula) => \`${cedula}@example.net\``. Used only by register/login; never in DB queries.
 3. **UUID-only client layer** — `profiles` queried by `id = auth.uid()`; never by cédula. Cédula = login resolution; UUID = identity.
 4. **Forms** — RSC actions + plain HTML5. Client Components only for input state + toasts.
 

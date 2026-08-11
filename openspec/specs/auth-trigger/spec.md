@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Defines the Postgres trigger that creates a `public.profiles` row automatically whenever a new row is inserted into `auth.users`. The trigger reads the cédula from `raw_user_meta_data`, validates it against the same digit-only / 6-to-10-character rule enforced by `profiles.cedula`'s CHECK constraint, and fails fast when the metadata is missing or malformed. After this trigger runs, every authenticated user is identifiable by UUID everywhere downstream — the synthetic `{cedula}@desaparecidos.local` email is constructed client-side and is not this trigger's concern.
+Defines the Postgres trigger that creates a `public.profiles` row automatically whenever a new row is inserted into `auth.users`. The trigger reads the cédula from `raw_user_meta_data`, validates it against the same digit-only / 6-to-10-character rule enforced by `profiles.cedula`'s CHECK constraint, and fails fast when the metadata is missing or malformed. After this trigger runs, every authenticated user is identifiable by UUID everywhere downstream — the synthetic `{cedula}@example.net` email is constructed client-side and is not this trigger's concern.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ The function body MUST:
 
 #### Scenario: trigger inserts a matching profile on signup
 
-- GIVEN the migration has been applied and a synthetic email `{cedula}@desaparecidos.local` would be constructed client-side
+- GIVEN the migration has been applied and a synthetic email `{cedula}@example.net` would be constructed client-side
 - WHEN a row is inserted into `auth.users` with `raw_user_meta_data = jsonb_build_object('cedula', '12345678')`
 - THEN a row exists in `public.profiles` with `id = NEW.id` and `cedula = '12345678'`.
 

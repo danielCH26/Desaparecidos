@@ -24,7 +24,7 @@ Phases run sequentially. Each phase ends with a reviewable artifact and a smoke 
 ### Phase 2 — Auth flow (cédula)
 
 - Build `/lib/supabase/client.ts` (browser) and `/lib/supabase/server.ts` (RSC cookie client).
-- Build `/register` and `/login` pages with Spanish copy, using the synthetic `{cedula}@desaparecidos.local` email.
+- Build `/register` and `/login` pages with Spanish copy, using the synthetic `{cedula}@example.net` email.
 - Disable Supabase email confirmation at the project level.
 - Build `/profile` for editing `display_name`, `real_phone`, `real_email`.
 - Header nav reflects auth state (login/logout).

@@ -74,7 +74,7 @@ supabase/
 ## Constraints
 
 - **Free tier only**. Stay within: Vercel Hobby, Supabase 500 MB DB + 1 GB storage.
-- **No email pipeline**. Supabase Auth email confirmation disabled. Synthetic `@desaparecidos.local` email is internal only.
+- **No email pipeline**. Supabase Auth email confirmation disabled. Synthetic `@example.net` email is internal only.
 - **No SMS**. Phone numbers stored as plain text.
 - **Web only**. No native mobile app in MVP.
 - **No authority integration**. No APIs to police, Red Cross, or government.

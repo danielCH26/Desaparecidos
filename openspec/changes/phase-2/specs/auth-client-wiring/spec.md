@@ -56,14 +56,14 @@ The project MUST list `@supabase/ssr` under `dependencies` in `package.json`. Th
 
 ### Requirement: Synthetic email helper
 
-`lib/supabase/syntheticEmail.ts` MUST export `syntheticEmailFor(cedula: string): string` returning `` `${cedula}@desaparecidos.local` ``. Register and login MUST both consume this helper — no other code may construct the email string.
+`lib/supabase/syntheticEmail.ts` MUST export `syntheticEmailFor(cedula: string): string` returning `` `${cedula}@example.net` ``. Register and login MUST both consume this helper — no other code may construct the email string.
 
 - The helper MUST be a pure, side-effect-free function: no DB calls, no logging, no I/O.
 
 #### Scenario: helper returns canonical email
 
 - WHEN `syntheticEmailFor('12345678')` is called
-- THEN the result MUST equal `'12345678@desaparecidos.local'` (TypeScript unit test).
+- THEN the result MUST equal `'12345678@example.net'` (TypeScript unit test).
 
 #### Scenario: helper is deterministic
 
@@ -73,7 +73,7 @@ The project MUST list `@supabase/ssr` under `dependencies` in `package.json`. Th
 #### Scenario: literal domain appears in exactly one file
 
 - GIVEN the project tree excluding `lib/supabase/syntheticEmail.ts` and `node_modules/`
-- WHEN grepped for the substring `@desaparecidos.local`
+- WHEN grepped for the substring `@example.net`
 - THEN exactly one match (the helper) MUST be found (apply-phase smoke test).
 
 ### Requirement: Service role key never reaches the browser bundle

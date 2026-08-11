@@ -8,5 +8,5 @@ export function syntheticEmailFor(cedula: string): string {
   if (!trimmed) {
     throw new Error('Cédula required for synthetic email');
   }
-  return `${trimmed}@desaparecidos.local`;
+  return `${trimmed}@example.net`;
 }

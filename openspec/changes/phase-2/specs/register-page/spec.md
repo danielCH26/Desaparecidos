@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Lets a new user create an account identified by their Colombian `cédula` plus a password, on top of the Phase 1 `handle_new_user` trigger. The form constructs the synthetic `{cedula}@desaparecidos.local` email client-side, calls `signUp`, and relies on the trigger to create the `profiles` row. After this capability lands, every later phase can identify publishers and enforce owner-only updates.
+Lets a new user create an account identified by their Colombian `cédula` plus a password, on top of the Phase 1 `handle_new_user` trigger. The form constructs the synthetic `{cedula}@example.net` email client-side, calls `signUp`, and relies on the trigger to create the `profiles` row. After this capability lands, every later phase can identify publishers and enforce owner-only updates.
 
 ## Requirements
 
@@ -54,7 +54,7 @@ After success, the client MUST navigate to `/`.
 
 - GIVEN anonymous user on `/register`
 - WHEN they submit `cedula = "12345678"`, `password = "abcdefgh"`, `confirmPassword = "abcdefgh"`, `displayName = "María"`
-- THEN `auth.users` contains one row whose email is `12345678@desaparecidos.local`
+- THEN `auth.users` contains one row whose email is `12345678@example.net`
 - AND `public.profiles` contains one row with `id = auth.users.id`, `cedula = "12345678"`, `display_name = "María"`
 - AND the browser ends up at `/`.
 
