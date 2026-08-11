@@ -3,36 +3,32 @@
  * Fails at module load if any required variable is missing.
  */
 
-const requiredVars = [
-  'NEXT_PUBLIC_SUPABASE_URL',
-  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-  'SUPABASE_SERVICE_ROLE_KEY',
-] as const;
+type RequiredEnvKey =
+  | 'NEXT_PUBLIC_SUPABASE_URL'
+  | 'NEXT_PUBLIC_SUPABASE_ANON_KEY'
+  | 'SUPABASE_SERVICE_ROLE_KEY';
 
-const env: Record<string, string> = {};
+type EnvConfig = Readonly<Record<RequiredEnvKey, string>>;
 
-// Validate and load required environment variables at module load time
-for (const key of requiredVars) {
+function readEnv(key: RequiredEnvKey): string {
   const value = process.env[key];
-
   if (!value) {
     throw new Error(`Missing required environment variable: ${key}`);
   }
-
-  env[key] = value;
+  return value;
 }
 
-// Re-export with proper typing (type assertion after fail-fast validation)
-export const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL as string;
-export const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-export const supabaseServiceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY as string;
-
 /**
- * Typed env object for convenience.
- * All required variables are guaranteed to be strings.
+ * Typed env object. Each required key is guaranteed to be a non-empty string.
+ * Use `satisfies EnvConfig` so the literal is structurally checked without
+ * widening or losing the precise key types.
  */
 export const envConfig = {
-  NEXT_PUBLIC_SUPABASE_URL: supabaseUrl,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: supabaseAnonKey,
-  SUPABASE_SERVICE_ROLE_KEY: supabaseServiceRoleKey,
-} as const;
+  NEXT_PUBLIC_SUPABASE_URL: readEnv('NEXT_PUBLIC_SUPABASE_URL'),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: readEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+  SUPABASE_SERVICE_ROLE_KEY: readEnv('SUPABASE_SERVICE_ROLE_KEY'),
+} as const satisfies EnvConfig;
+
+export const supabaseUrl = envConfig.NEXT_PUBLIC_SUPABASE_URL;
+export const supabaseAnonKey = envConfig.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export const supabaseServiceRoleKey = envConfig.SUPABASE_SERVICE_ROLE_KEY;
