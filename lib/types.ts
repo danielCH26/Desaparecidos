@@ -24,3 +24,14 @@ export interface Report extends ReportSummary {
   contact_email: string | null;
   updated_at: string;
 }
+
+export interface CommentSummary {
+  id: string;
+  body: string;
+  author_id: string | null;
+  created_at: string;
+}
+
+export interface CommentWithAuthor extends CommentSummary {
+  author_display_name: string | null;
+}

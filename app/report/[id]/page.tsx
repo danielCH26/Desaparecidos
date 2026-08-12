@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import CommentForm from '@/components/forms/CommentForm';
+import CommentList from '@/components/ui/CommentList';
 
 const ReportMap = dynamic(() => import('@/components/map/ReportMap'), { ssr: false });
 
@@ -19,6 +21,8 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
 
   // If identified, fetch publisher's display_name
   let publisherName: string | null = null;
+  const { data: { user } } = await supabase.auth.getUser();
+
   if (report.published_by) {
     const { data } = await supabase
       .from('profiles')
@@ -90,10 +94,10 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
       </section>
 
       <section className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-semibold mb-2">Comentarios</h2>
-        <p className="text-sm text-gray-500">
-          Los comentarios estarán disponibles próximamente. (Phase 5)
-        </p>
+        <h2 className="text-lg font-semibold mb-3">Comentarios</h2>
+        <CommentForm reportId={params.id} isAuthed={!!user} />
+        <h3 className="text-sm font-medium text-gray-500 mt-6 mb-2">Conversación</h3>
+        <CommentList reportId={params.id} />
       </section>
     </main>
   );
