@@ -7,7 +7,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Setup (T1)
 
 **T1** — Install Leaflet + react-leaflet + types
-- *Orchestrator-action* | `package.json`, `package-lock.json`
+- [x] *Orchestrator-action* | `package.json`, `package-lock.json`
 - Run: `npm install leaflet react-leaflet && npm install --save-dev @types/leaflet`
 - Verify: `npm ls leaflet react-leaflet` returns valid versions; `npm ls @types/leaflet` (dev) returns valid version
 - Dependency: None
@@ -16,7 +16,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Map Component (T2)
 
 **T2** — Create `components/map/ReportMap.tsx` (Client Component)
-- *Orchestrator-action* | `components/map/ReportMap.tsx` (new)
+- [x] *Orchestrator-action* | `components/map/ReportMap.tsx` (new)
 - 'use client' + dynamic import strategy (Leaflet needs `window`)
 - Default center: Colombia (`lat: 4.5709, lng: -74.2973, zoom: 6`)
 - OpenStreetMap tile layer: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
@@ -31,7 +31,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Server Action (T3)
 
 **T3** — Create `app/actions/reports.ts` (Server Action `createReportAction`)
-- *Orchestrator-action* | `app/actions/reports.ts` (new)
+- [x] *Orchestrator-action* | `app/actions/reports.ts` (new)
 - `'use server'` directive
 - Authoritative server-side validation:
   - `person_name`: non-empty, 1–200 chars
@@ -56,7 +56,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Form Component (T4)
 
 **T4** — Create `components/forms/ReportForm.tsx` (Client Component)
-- *Orchestrator-action* | `components/forms/ReportForm.tsx` (new)
+- [x] *Orchestrator-action* | `components/forms/ReportForm.tsx` (new)
 - 'use client'
 - All form fields with Spanish labels per spec:
   - `person_name` (text, required)
@@ -72,8 +72,8 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 - When identificarme: show photo input + preview (using `URL.createObjectURL`)
 - Photo upload (if identifying): `await supabaseBrowserClient.storage.from('report-photos').upload(path, file)` with path `${auth.user.id}/${Date.now()}-${random}.jpg`
 - After upload: get public URL via `.getPublicUrl(path)`
-- Submit handler: orchestrates photo upload (if applicable) → collects all form fields → calls `createReportAction(formData)` via `useFormState`
-- After successful submit (state.success): `router.push('/')`
+- Submit handler: orchestrates photo upload (if applicable) → collects all form fields → calls `createReportAction(formData)` via `useTransition`
+- After successful submit: `router.push('/')`
 - Client-side validation (HTML5 + JS for file size, MIME type, lat/lng range)
 - Verify: renders all fields; clicking "Identificarme" shows photo input; submitting valid form calls Server Action
 - Dependency: T2 (uses ReportMap) + T3 (calls createReportAction)
@@ -82,7 +82,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Page (T5)
 
 **T5** — Create `app/report/new/page.tsx` (Server Component shell)
-- *Orchestrator-action* | `app/report/new/page.tsx` (new)
+- [x] *Orchestrator-action* | `app/report/new/page.tsx` (new)
 - Server Component
 - Calls `await createSupabaseServerClient()` and `supabase.auth.getUser()`
 - If authed: fetches `display_name` via `supabase.from('profiles').select('display_name').eq('id', user.id).single()`
@@ -97,7 +97,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Smoke Tests (T6)
 
 **T6** — End-to-end smoke tests via REST API + curl
-- *Orchestrator-action* | None (verification only)
+- [x] *Orchestrator-action* | None (verification only)
 - 6a. **Anon INSERT**: Use REST API with anon key, POST a `reports` row with `published_by=null`, verify 201
 - 6b. **Anon INSERT with photoUrl**: same but include fake photoUrl, verify rejected (RLS)
 - 6c. **Authed INSERT with photoUrl**: use service_role to simulate authed user (bypass RLS for test), insert with `published_by=<some-uuid>` and `person_photo_url=<some-url>`
@@ -111,7 +111,7 @@ The 6 tasks below cover the full Phase 3 implementation. Each task has dependenc
 ### Commit & Review (T7)
 
 **T7** — Commit: `feat(reports): form with map, photo upload, and anonymous publishing`
-- *Orchestrator-action* | All changed files
+- [x] *Orchestrator-action* | All changed files
 - NO AI attribution. Conventional commit format.
 - Verify: `git status --porcelain | wc -l` shows clean except untracked openspec/changes/phase-3/ artifacts
 - Dependency: T6
