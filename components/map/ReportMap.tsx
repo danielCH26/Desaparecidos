@@ -50,9 +50,10 @@ const MapEvents = dynamic(
 interface ReportMapProps {
   value: { lat: number; lng: number } | null;
   onChange: (loc: { lat: number; lng: number } | null) => void;
+  readOnly?: boolean;
 }
 
-export default function ReportMap({ value, onChange }: ReportMapProps) {
+export default function ReportMap({ value, onChange, readOnly = false }: ReportMapProps) {
   const center: [number, number] = useMemo(
     () => (value ? [value.lat, value.lng] : [4.5709, -74.2973]),
     [value]
@@ -60,37 +61,47 @@ export default function ReportMap({ value, onChange }: ReportMapProps) {
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1">
-        Ubicación última conocida
-      </label>
+      {!readOnly && (
+        <label className="block text-sm font-medium mb-1">
+          Ubicación última conocida
+        </label>
+      )}
       <div className="h-72 md:h-96 rounded-lg overflow-hidden border border-gray-300">
         <MapContainer
           center={center}
           zoom={6}
           style={{ height: '100%', width: '100%' }}
-          scrollWheelZoom={false}
+          dragging={!readOnly}
+          scrollWheelZoom={!readOnly}
+          doubleClickZoom={!readOnly}
+          touchZoom={!readOnly}
+          keyboard={!readOnly}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <MapEvents onClick={(lat, lng) => onChange({ lat, lng })} />
+          {!readOnly && <MapEvents onClick={(lat, lng) => onChange({ lat, lng })} />}
           {value && (
             <Marker
               position={[value.lat, value.lng]}
-              draggable
-              eventHandlers={{
-                dragend: (e) => {
-                  const m = e.target;
-                  const p = m.getLatLng();
-                  onChange({ lat: p.lat, lng: p.lng });
-                },
-              }}
+              draggable={!readOnly}
+              eventHandlers={
+                !readOnly
+                  ? {
+                      dragend: (e) => {
+                        const m = e.target;
+                        const p = m.getLatLng();
+                        onChange({ lat: p.lat, lng: p.lng });
+                      },
+                    }
+                  : undefined
+              }
             />
           )}
         </MapContainer>
       </div>
-      {value && (
+      {value && !readOnly && (
         <p className="mt-1 text-xs text-gray-500">
           Lat: {value.lat.toFixed(6)}, Lng: {value.lng.toFixed(6)}{' '}
           <button
