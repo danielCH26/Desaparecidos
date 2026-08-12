@@ -65,7 +65,6 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
 
       <ReportMap
         value={{ lat: report.last_known_lat, lng: report.last_known_lng }}
-        onChange={() => {}}
         readOnly={true}
       />
 

@@ -49,11 +49,16 @@ const MapEvents = dynamic(
 
 interface ReportMapProps {
   value: { lat: number; lng: number } | null;
-  onChange: (loc: { lat: number; lng: number } | null) => void;
+  /** Required when interactive (e.g., create form). Omit in read-only contexts (e.g., detail page) — passing a function from a Server Component is invalid. */
+  onChange?: (loc: { lat: number; lng: number } | null) => void;
   readOnly?: boolean;
 }
 
-export default function ReportMap({ value, onChange, readOnly = false }: ReportMapProps) {
+export default function ReportMap({
+  value,
+  onChange,
+  readOnly = false,
+}: ReportMapProps) {
   const center: [number, number] = useMemo(
     () => (value ? [value.lat, value.lng] : [4.5709, -74.2973]),
     [value]
@@ -81,13 +86,13 @@ export default function ReportMap({ value, onChange, readOnly = false }: ReportM
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {!readOnly && <MapEvents onClick={(lat, lng) => onChange({ lat, lng })} />}
+          {!readOnly && onChange && <MapEvents onClick={(lat, lng) => onChange({ lat, lng })} />}
           {value && (
             <Marker
               position={[value.lat, value.lng]}
-              draggable={!readOnly}
+              draggable={!readOnly && !!onChange}
               eventHandlers={
-                !readOnly
+                !readOnly && onChange
                   ? {
                       dragend: (e) => {
                         const m = e.target;
@@ -101,7 +106,7 @@ export default function ReportMap({ value, onChange, readOnly = false }: ReportM
           )}
         </MapContainer>
       </div>
-      {value && !readOnly && (
+      {value && !readOnly && onChange && (
         <p className="mt-1 text-xs text-gray-500">
           Lat: {value.lat.toFixed(6)}, Lng: {value.lng.toFixed(6)}{' '}
           <button
