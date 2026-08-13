@@ -74,15 +74,6 @@ export default async function ReportsListPage(props: { searchParams: SearchParam
     <main className="min-h-screen p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Personas reportadas como desaparecidas</h1>
 
-      <div className="flex justify-end mb-4">
-        <Link
-          href="/report/new"
-          className="inline-flex items-center min-h-[44px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          + Publicar reporte
-        </Link>
-      </div>
-
       <ReportsFilterBar
         current={{
           department,
