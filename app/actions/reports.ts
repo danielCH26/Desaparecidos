@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isValidDepartment, isValidMunicipality } from '@/lib/colombia-divipola';
 
 type CreateReportResult = { error: string } | undefined;
 
@@ -49,6 +50,30 @@ export async function createReportAction(
   const lastKnownAddress = String(formData.get('last_known_address') ?? '').trim() || null;
   if (lastKnownAddress && lastKnownAddress.length > 500) {
     return err('La dirección debe tener máximo 500 caracteres');
+  }
+
+  // Department and municipality
+  const departmentRaw = String(formData.get('department') ?? '').trim();
+  const municipalityRaw = String(formData.get('municipality') ?? '').trim();
+
+  let department: string | null = null;
+  let municipality: string | null = null;
+
+  if (departmentRaw) {
+    if (!isValidDepartment(departmentRaw)) {
+      return err('El departamento no es válido');
+    }
+    department = departmentRaw;
+  }
+
+  if (municipalityRaw) {
+    if (!department) {
+      return err('Selecciona un departamento primero');
+    }
+    if (!isValidMunicipality(department, municipalityRaw)) {
+      return err('El municipio no es válido para el departamento seleccionado');
+    }
+    municipality = municipalityRaw;
   }
 
   const lastSeenAtRaw = String(formData.get('last_seen_at') ?? '');
@@ -110,6 +135,8 @@ export async function createReportAction(
       contact_email: contactEmail,
       published_by: publishedBy,
       status: 'missing',
+      department,
+      municipality,
     });
 
   if (error) {

@@ -24,6 +24,17 @@ export default async function ReportCard({ report }: { report: ReportSummary }) 
   const ageText = report.person_age !== null ? `, ${report.person_age} años` : '';
   const timeAgo = formatRelativeTime(report.created_at, 'es');
 
+  const departmentBadge = report.department ? (
+    <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded mr-1">
+      {report.department}
+      {report.municipality && `, ${report.municipality}`}
+    </span>
+  ) : (
+    <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded mr-1">
+      Sin departamento
+    </span>
+  );
+
   return (
     <Link
       href={`/report/${report.id}`}
@@ -52,6 +63,7 @@ export default async function ReportCard({ report }: { report: ReportSummary }) 
           </p>
         )}
         <p className="text-xs text-gray-400 mt-2">
+          {departmentBadge}
           {publisher ? `Por ${publisher}` : 'Anónimo'} · {timeAgo}
         </p>
       </div>

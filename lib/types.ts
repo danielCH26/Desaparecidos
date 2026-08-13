@@ -14,6 +14,8 @@ export interface ReportSummary {
   created_at: string;
   status: 'missing' | 'found' | 'resolved';
   published_by: string | null;
+  department: string | null;
+  municipality: string | null;
 }
 
 /**

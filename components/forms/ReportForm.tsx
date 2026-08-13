@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import { createReportAction } from '@/app/actions/reports';
+import { DEPARTMENTS, municipalitiesFor } from '@/lib/colombia-divipola';
 
 // Dynamic to avoid SSR (Leaflet needs window)
 const ReportMap = dynamic(() => import('@/components/map/ReportMap'), { ssr: false });
@@ -35,6 +36,11 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
 
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  // Department and municipality state
+  const [department, setDepartment] = useState('');
+  const [municipality, setMunicipality] = useState('');
+  const availableMunicipalities = department ? municipalitiesFor(department) : [];
 
   const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
 
@@ -108,6 +114,8 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
     fd.append('last_known_lng', String(location.lng));
     fd.append('isAnonymous', String(isAnonymous));
     if (uploadedPhotoUrl) fd.append('photoUrl', uploadedPhotoUrl);
+    if (department) fd.append('department', department);
+    if (municipality) fd.append('municipality', municipality);
 
     startTransition(async () => {
       const result = await createReportAction(undefined, fd);
@@ -164,6 +172,49 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Departamento (opcional)
+        </label>
+        <select
+          name="department"
+          value={department}
+          onChange={(e) => {
+            setDepartment(e.target.value);
+            setMunicipality('');
+          }}
+          className="w-full min-h-[44px] border rounded px-3 py-2"
+        >
+          <option value="">Selecciona un departamento</option>
+          {DEPARTMENTS.map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {department && (
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Municipio (opcional)
+          </label>
+          <select
+            name="municipality"
+            value={municipality}
+            onChange={(e) => setMunicipality(e.target.value)}
+            className="w-full min-h-[44px] border rounded px-3 py-2"
+          >
+            <option value="">Selecciona un municipio</option>
+            {availableMunicipalities.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium mb-1">
