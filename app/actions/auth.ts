@@ -6,6 +6,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { syntheticEmailFor } from '@/lib/supabase/syntheticEmail';
 
 const CEDULA_REGEX = /^\d{6,10}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^\+?[\d\s-]{7,20}$/;
 
 /**
  * Translate common Supabase auth errors to Spanish.
@@ -18,6 +20,8 @@ function translateAuthError(message: string): string {
     return 'La contraseña debe tener al menos 8 caracteres';
   }
   if (lower.includes('rate limit')) return 'Demasiados intentos, espera un momento';
+  if (lower.includes('email format invalid')) return 'El correo no es válido';
+  if (lower.includes('phone format invalid')) return 'El celular no es válido';
   return 'No se pudo procesar la solicitud. Intenta de nuevo.';
 }
 
@@ -37,6 +41,8 @@ export async function registerAction(_prev: unknown, formData: FormData) {
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
   const displayName = String(formData.get('displayName') ?? '').trim();
+  const realEmail = String(formData.get('real_email') ?? '').trim();
+  const realPhone = String(formData.get('real_phone') ?? '').trim();
 
   if (!CEDULA_REGEX.test(cedula)) {
     return { error: 'Cédula debe tener entre 6 y 10 dígitos' };
@@ -46,6 +52,15 @@ export async function registerAction(_prev: unknown, formData: FormData) {
   }
   if (password !== confirmPassword) {
     return { error: 'Las contraseñas no coinciden' };
+  }
+
+  // Validate real_email if provided
+  if (realEmail && !EMAIL_REGEX.test(realEmail)) {
+    return { error: 'El correo no es válido' };
+  }
+  // Validate real_phone if provided
+  if (realPhone && !PHONE_REGEX.test(realPhone)) {
+    return { error: 'El celular no es válido' };
   }
 
   const supabase = await createSupabaseServerClient();
@@ -58,6 +73,8 @@ export async function registerAction(_prev: unknown, formData: FormData) {
       data: {
         cedula,
         display_name: displayName || undefined,
+        real_email: realEmail || undefined,
+        real_phone: realPhone || undefined,
       },
     },
   });

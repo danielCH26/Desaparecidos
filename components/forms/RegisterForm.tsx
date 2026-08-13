@@ -3,8 +3,11 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { registerAction } from '@/app/actions/auth';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^\+?[\d\s-]{7,20}$/;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -22,13 +25,30 @@ function SubmitButton() {
 export default function RegisterForm() {
   const [state, formAction] = useFormState(registerAction, null);
   const router = useRouter();
+  const [realEmail, setRealEmail] = useState('');
+  const [realPhone, setRealPhone] = useState('');
+  const [clientError, setClientError] = useState('');
 
   useEffect(() => {
     if (state?.success) router.push('/');
   }, [state, router]);
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    setClientError('');
+    if (realEmail && !EMAIL_REGEX.test(realEmail)) {
+      setClientError('El correo no es válido');
+      e.preventDefault();
+      return;
+    }
+    if (realPhone && !PHONE_REGEX.test(realPhone)) {
+      setClientError('El celular no es válido');
+      e.preventDefault();
+      return;
+    }
+  }
+
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="cedula" className="block text-sm font-medium mb-1">
           Cédula
@@ -55,6 +75,40 @@ export default function RegisterForm() {
           autoComplete="nickname"
           className="w-full min-h-[44px] border rounded px-3 py-2"
         />
+      </div>
+      <div>
+        <label htmlFor="real_email" className="block text-sm font-medium mb-1">
+          Correo (opcional)
+        </label>
+        <input
+          id="real_email"
+          name="real_email"
+          type="email"
+          value={realEmail}
+          onChange={(e) => setRealEmail(e.target.value)}
+          className="w-full min-h-[44px] border rounded px-3 py-2"
+          placeholder="tu@correo.com"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Para que te podamos contactar si alguien encuentra a la persona.
+        </p>
+      </div>
+      <div>
+        <label htmlFor="real_phone" className="block text-sm font-medium mb-1">
+          Celular (opcional)
+        </label>
+        <input
+          id="real_phone"
+          name="real_phone"
+          type="tel"
+          value={realPhone}
+          onChange={(e) => setRealPhone(e.target.value)}
+          className="w-full min-h-[44px] border rounded px-3 py-2"
+          placeholder="3001234567"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Para que te podamos contactar si alguien encuentra a la persona.
+        </p>
       </div>
       <div>
         <label htmlFor="password" className="block text-sm font-medium mb-1">
@@ -84,9 +138,9 @@ export default function RegisterForm() {
           className="w-full min-h-[44px] border rounded px-3 py-2"
         />
       </div>
-      {state?.error && (
+      {(state?.error || clientError) && (
         <p role="alert" className="text-red-600 text-sm">
-          {state.error}
+          {state?.error || clientError}
         </p>
       )}
       <SubmitButton />
