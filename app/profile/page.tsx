@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import ProfileForm from '@/components/forms/ProfileForm';
+import SavesList from '@/components/ui/SavesList';
 
 export default async function ProfilePage() {
   const supabase = await createSupabaseServerClient();
@@ -32,6 +33,13 @@ export default async function ProfilePage() {
         realPhone={profile.real_phone ?? ''}
         realEmail={profile.real_email ?? ''}
       />
+
+      <hr className="my-6" />
+
+      <section>
+        <h2 className="text-lg font-semibold mb-3">Reportes guardados</h2>
+        <SavesList />
+      </section>
     </main>
   );
 }

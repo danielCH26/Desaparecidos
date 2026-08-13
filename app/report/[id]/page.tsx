@@ -3,6 +3,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import CommentForm from '@/components/forms/CommentForm';
+import SaveButton from '@/components/ui/SaveButton';
 import CommentList from '@/components/ui/CommentList';
 
 const ReportMap = dynamic(() => import('@/components/map/ReportMap'), { ssr: false });
@@ -22,6 +23,18 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
   // If identified, fetch publisher's display_name
   let publisherName: string | null = null;
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Query save state for current user (parallelized with report fetch)
+  let initialSaved = false;
+  if (user) {
+    const { data: save } = await supabase
+      .from('saves')
+      .select('id')
+      .eq('report_id', params.id)
+      .eq('profile_id', user.id)
+      .maybeSingle();
+    initialSaved = !!save;
+  }
 
   if (report.published_by) {
     const { data } = await supabase
@@ -91,6 +104,8 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
           )}
         </div>
       </section>
+
+      <SaveButton reportId={params.id} initialSaved={initialSaved} isAuthed={!!user} />
 
       <section className="mt-8 border-t pt-4">
         <h2 className="text-lg font-semibold mb-3">Comentarios</h2>
