@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { registerAction } from '@/app/actions/auth';
+import AcceptanceCheckbox from '@/components/AcceptanceCheckbox';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[\d\s-]{7,20}$/;
@@ -28,6 +29,7 @@ export default function RegisterForm() {
   const [realEmail, setRealEmail] = useState('');
   const [realPhone, setRealPhone] = useState('');
   const [clientError, setClientError] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   useEffect(() => {
     if (state?.success) router.push('/');
@@ -35,6 +37,11 @@ export default function RegisterForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     setClientError('');
+    if (!accepted) {
+      setClientError('Aceptá los términos y la política de datos para continuar');
+      e.preventDefault();
+      return;
+    }
     if (realEmail && !EMAIL_REGEX.test(realEmail)) {
       setClientError('El correo no es válido');
       e.preventDefault();
@@ -138,6 +145,11 @@ export default function RegisterForm() {
           className="w-full min-h-[44px] border rounded px-3 py-2"
         />
       </div>
+      <AcceptanceCheckbox
+        checked={accepted}
+        onChange={setAccepted}
+        required
+      />
       {(state?.error || clientError) && (
         <p role="alert" className="text-red-600 text-sm">
           {state?.error || clientError}

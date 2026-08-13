@@ -19,6 +19,12 @@ export default async function Header() {
           >
             + Publicar reporte
           </Link>
+          <Link
+            href="/legal/datos"
+            className="hover:underline min-h-[44px] inline-flex items-center"
+          >
+            Legal
+          </Link>
           {user ? (
             <>
               <Link href="/profile" className="hover:underline min-h-[44px] inline-flex items-center">

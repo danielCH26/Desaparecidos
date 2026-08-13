@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/ui/Header";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,6 +40,7 @@ export default function RootLayout({
         <main id="main" className="min-h-[calc(100vh-65px)]">
           {children}
         </main>
+        <CookieConsentBanner />
       </body>
     </html>
   );

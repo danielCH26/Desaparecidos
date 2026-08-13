@@ -3,6 +3,8 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import { loginAction } from '@/app/actions/auth';
+import AcceptanceCheckbox from '@/components/AcceptanceCheckbox';
+import { useState } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,9 +21,22 @@ function SubmitButton() {
 
 export default function LoginForm({ redirect }: { redirect: string }) {
   const [state, formAction] = useFormState(loginAction, null);
+  const [accepted, setAccepted] = useState(false);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (!accepted) {
+      e.preventDefault();
+      alert('Aceptá los términos y la política de datos para continuar');
+      return;
+    }
+  }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form
+      action={formAction}
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
       <input type="hidden" name="redirect" value={redirect} />
       <div>
         <label htmlFor="cedula" className="block text-sm font-medium mb-1">
@@ -51,6 +66,11 @@ export default function LoginForm({ redirect }: { redirect: string }) {
           className="w-full min-h-[44px] border rounded px-3 py-2"
         />
       </div>
+      <AcceptanceCheckbox
+        checked={accepted}
+        onChange={setAccepted}
+        optional
+      />
       {state?.error && (
         <p role="alert" className="text-red-600 text-sm">
           {state.error}
