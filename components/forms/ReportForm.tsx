@@ -260,7 +260,7 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
       </div>
 
       <fieldset className="border rounded p-3">
-        <legend className="text-sm font-medium px-2">¿Cómo querés publicar?</legend>
+        <legend className="text-sm font-medium px-2">¿Cómo querés firmar?</legend>
         <label className="flex items-center gap-2 py-1">
           <input
             type="radio"
@@ -268,7 +268,7 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
             checked={isAnonymous}
             onChange={() => setIsAnonymous(true)}
           />
-          <span>Como anónimo (sin foto)</span>
+          <span>Como anónimo</span>
         </label>
         <label className="flex items-center gap-2 py-1">
           <input
@@ -279,15 +279,18 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
             onChange={() => setIsAnonymous(false)}
           />
           <span>
-            Identificarme {isAuthed ? '(con foto)' : '(iniciá sesión primero)'}
+            Identificarme (mostrar mi nombre){!isAuthed && ' — iniciá sesión primero'}
           </span>
         </label>
+        <p className="text-xs text-gray-500 mt-1">
+          Si te identificás, tu nombre aparece en el reporte y pueden contactarte.
+        </p>
       </fieldset>
 
       {!isAnonymous && isAuthed && (
         <div>
           <label htmlFor="person_photo" className="block text-sm font-medium mb-1">
-            Foto (opcional)
+            Foto de la persona desaparecida (opcional)
           </label>
           <input
             id="person_photo"
@@ -298,13 +301,13 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
             className="w-full min-h-[44px]"
           />
           <p id="person_photo_help" className="text-xs text-gray-500 mt-1">
-            JPG, PNG o WebP. Máximo 5 MB.
+            Subí una foto de la persona desaparecida (no tuya). JPG, PNG o WebP. Máximo 5 MB.
           </p>
           {photoPreview && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={photoPreview}
-              alt="Vista previa"
+              alt="Vista previa de la foto"
               className="mt-2 max-h-48 rounded border"
             />
           )}
