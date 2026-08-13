@@ -40,6 +40,7 @@ export default function SaveButton({ reportId, initialSaved, isAuthed }: SaveBut
         type="button"
         onClick={onClick}
         disabled={isPending}
+        aria-pressed={saved}
         className={
           saved
             ? 'w-full min-h-[44px] border border-blue-600 text-blue-600 bg-white rounded px-4 py-2'

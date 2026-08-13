@@ -235,15 +235,20 @@ export default function ReportForm({ isAuthed }: ReportFormProps) {
 
       {!isAnonymous && isAuthed && (
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label htmlFor="person_photo" className="block text-sm font-medium mb-1">
             Foto (opcional)
           </label>
           <input
+            id="person_photo"
             type="file"
             accept="image/jpeg,image/png,image/webp"
             onChange={onPhotoChange}
+            aria-describedby="person_photo_help"
             className="w-full min-h-[44px]"
           />
+          <p id="person_photo_help" className="text-xs text-gray-500 mt-1">
+            JPG, PNG o WebP. Máximo 5 MB.
+          </p>
           {photoPreview && (
             // eslint-disable-next-line @next/next/no-img-element
             <img

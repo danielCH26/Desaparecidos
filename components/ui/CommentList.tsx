@@ -52,7 +52,11 @@ export default async function CommentList({ reportId }: { reportId: string }) {
         </p>
       ) : (
         list.map((c) => (
-          <article key={c.id} className="border-l-4 border-blue-200 pl-3 py-2">
+          <article
+            key={c.id}
+            aria-label={`Comentario de ${c.author_id ? c.author_display_name ?? 'usuario' : 'anónimo'}`}
+            className="border-l-4 border-blue-200 pl-3 py-2"
+          >
             <p className="whitespace-pre-wrap text-sm">{c.body}</p>
             <p className="text-xs text-gray-500 mt-1">
               {c.author_id ? `Por ${c.author_display_name ?? 'usuario'}` : 'Anónimo'}

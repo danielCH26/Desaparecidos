@@ -3,6 +3,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import ProfileForm from '@/components/forms/ProfileForm';
 import SavesList from '@/components/ui/SavesList';
 
+export const metadata = {
+  title: 'Mi perfil — Desaparecidos',
+};
+
 export default async function ProfilePage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();

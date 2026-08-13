@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import CommentForm from '@/components/forms/CommentForm';
@@ -7,6 +8,25 @@ import SaveButton from '@/components/ui/SaveButton';
 import CommentList from '@/components/ui/CommentList';
 
 const ReportMap = dynamic(() => import('@/components/map/ReportMap'), { ssr: false });
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = await createSupabaseServerClient();
+  const { data: report } = await supabase
+    .from('reports')
+    .select('person_name')
+    .eq('id', params.id)
+    .single();
+  return {
+    title: report
+      ? `${report.person_name} — Desaparecidos`
+      : 'Reporte — Desaparecidos',
+    description: 'Reporte de persona desaparecida',
+  };
+}
 
 export default async function ReportDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createSupabaseServerClient();

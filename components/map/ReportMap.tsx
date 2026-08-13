@@ -71,7 +71,10 @@ export default function ReportMap({
           Ubicación última conocida
         </label>
       )}
-      <div className="h-72 md:h-96 rounded-lg overflow-hidden border border-gray-300">
+      <div
+        className="h-72 md:h-96 rounded-lg overflow-hidden border border-gray-300"
+        aria-label="Mapa de ubicación"
+      >
         <MapContainer
           center={center}
           zoom={6}

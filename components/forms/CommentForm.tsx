@@ -60,6 +60,8 @@ export default function CommentForm({ reportId, isAuthed }: { reportId: string; 
           onChange={(e) => setBody(e.target.value)}
           rows={4}
           maxLength={MAX_BODY}
+          required
+          aria-required="true"
           placeholder="Si tenés información sobre esta persona, dejala acá. Mantené el respeto."
           className="w-full border rounded px-3 py-2 min-h-[88px]"
         />

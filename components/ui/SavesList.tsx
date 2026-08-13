@@ -52,7 +52,10 @@ export default async function SavesList() {
       {saves.map((save) => {
         const r = save.report as unknown as { id: string; person_name: string; person_age: number | null; person_photo_url: string | null };
         return (
-          <li key={save.id}>
+          <li
+            key={save.id}
+            aria-label={`Reporte de ${r.person_name}${r.person_age !== null ? `, ${r.person_age} años` : ''}, guardado ${formatRelative(save.created_at, 'es')}`}
+          >
             <Link
               href={`/report/${r.id}`}
               className="block bg-white rounded-lg shadow p-3 hover:shadow-md transition-shadow min-h-[44px]"

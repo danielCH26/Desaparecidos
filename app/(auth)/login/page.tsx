@@ -4,6 +4,10 @@ interface LoginPageProps {
   searchParams: Promise<{ redirect?: string }>;
 }
 
+export const metadata = {
+  title: 'Iniciar sesión — Desaparecidos',
+};
+
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   return (

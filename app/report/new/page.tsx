@@ -1,6 +1,10 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import ReportForm from '@/components/forms/ReportForm';
 
+export const metadata = {
+  title: 'Publicar reporte — Desaparecidos',
+};
+
 export default async function ReportNewPage() {
   const supabase = await createSupabaseServerClient();
   const {

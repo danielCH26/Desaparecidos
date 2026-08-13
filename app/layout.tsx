@@ -29,8 +29,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2 focus:rounded"
+        >
+          Saltar al contenido principal
+        </a>
         <Header />
-        {children}
+        <main id="main" className="min-h-[calc(100vh-65px)]">
+          {children}
+        </main>
       </body>
     </html>
   );
